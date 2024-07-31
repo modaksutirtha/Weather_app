@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Acme&family=Dancing+Script&family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&family=Skranji&display=swap');
+
+body {
+  /* margin: 0; */
+  font-family: "Poppins", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: url("https://img.freepik.com/premium-photo/abstract-green-nature-blur-background_1165739-523.jpg") no-repeat center center/cover;
+  height: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h1 {
+  @media (max-width: 318px) {
+    font-size: 2rem;
+  }
+}
+
+.weather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 13px;
+  background-color: #00ffff9c;
+  width: 27%;
+  margin: 4rem auto;
+
+  @media (max-width: 872px) {
+    width: 86%;
+    margin: 6rem auto;
+    padding: 0.5rem;
+  }
+}
+
+.top {
+  display: flex;
+}
+
+.top img {
+  height: 3rem;
+  width: 3rem;
+  margin-top: 1.6rem;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.search input {
+  padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+  border-radius: 23px;
+  font-size: 1.1rem;
+
+  @media (max-width: 318px) {
+    font-size: 0.6rem;
+  }
+}
+
+.search img {
+  border-radius: 50%;
+  padding: 8px;
+  border: 1px solid black;
+  background-color: white;
+  cursor: pointer;
+}
+
+.icon img {
+  height: 10rem;
+  width: 10rem;
+}
+
+.temperature {
+  font-size: 3.6rem;
+  margin-top: 0px;
+
+  @media (max-width: 872px) {
+    font-size: 3rem;
+  }
+}
+
+.Location {
+  font-size: 2rem;
+  margin-top: -4rem;
+}
+
+.weatherdata {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.weatherdata .col {
+  display: flex;
+  align-items: flex-start;
+  font-size: 22px;
+}
+
+.weatherdata .col span {
+  display: block;
+  font-size: 16px;
+  margin-top: -1.5rem;
+}
+
+.weatherdata .col img {
+  width: 26px;
+  margin-top: 25px;
+}
