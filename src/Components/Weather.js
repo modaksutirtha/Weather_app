@@ -7,13 +7,16 @@ import Clear from "../Images/clear.png"
 import Cloud from "../Images/cloud.png";
 import Drizzle from "../Images/drizzle.png";
 import Search from "../Images/search.png"
+import Clearnight from "../Images/clearnight.png"
+import Mist from "../Images/Mist.png"
+import Thunderstorm from "../Images/thunderstorm.png"
 function Weather() {
     const inputref = useRef();
     const [weatherdataa, setweatherdata] = useState(false);
     const allicon = {
         "01d": Clear,
-        "02d": Clear,
-        "01n": Cloud,
+        "01n": Clearnight,
+        "02d": Cloud,
         "02n": Cloud,
         "03d": Cloud,
         "03n": Cloud,
@@ -21,10 +24,14 @@ function Weather() {
         "04d": Drizzle,
         "09n": Rain,
         "09d": Rain,
-        "010n": Rain,
-        "010d": Rain,
-        "013n": Snow,
-        "13d": Snow
+        "10n": Rain,
+        "10d": Rain,
+        "11d":Thunderstorm,
+        "11n":Thunderstorm,
+        "13n": Snow,
+        "13d": Snow,
+        "50d":Mist,
+        "50n":Mist
     };
 
     const search = async (city) => {
@@ -48,7 +55,8 @@ function Weather() {
                 winspeed: data.wind.speed,
                 temperature: Math.floor(data.main.temp),
                 location: data.name,
-                icon: icon
+                icon: icon,
+                description:data.weather[0].description
             })
         } catch (error) {
             setweatherdata(false);
@@ -78,11 +86,12 @@ function Weather() {
                     </div>
                     <p className="temperature">{weatherdataa.temperature}ºC</p>
                     <p className="Location">{weatherdataa.location}</p>
+                    <p className="description">{weatherdataa.description}</p>
                     <div className="weatherdata">
                         <div className="col">
                             <img src={Humidity_icon} alt="weatherimage"></img>
                             <div>
-                                <p>{weatherdataa.humidity}</p>
+                                <p>{weatherdataa.humidity}%</p>
                                 <span>Humidity</span>
                             </div>
 
@@ -90,7 +99,7 @@ function Weather() {
                         <div className="col">
                             <img src={Wind} alt="weatherimage"></img>
                             <div>
-                                <p>{weatherdataa.winspeed}</p>
+                                <p>{weatherdataa.winspeed} Km/h</p>
                                 <span>Wind Speed</span>
                             </div>
                         </div>
