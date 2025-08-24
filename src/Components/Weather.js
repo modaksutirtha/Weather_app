@@ -65,7 +65,7 @@ function Weather() {
     }
 
     useEffect(() => {
-        search("Agartala");
+        search("Bengaluru");
     }, [])
     return (
 
