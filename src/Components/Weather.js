@@ -160,10 +160,20 @@ function Weather() {
             </div>
                 
                 <div className="search">
-                    <input type="text" ref={inputref} placeholder="Search"></input>
+                    <input 
+                        type="text" 
+                        ref={inputref} 
+                        placeholder="Search"
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                                search(inputref.current.value);
+                            }
+                        }}
+                    ></input>
                     <img src={Search} onClick={() => search(inputref.current.value)} alt="weatherimage"></img>
                 </div>
                 {weatherdataa ? <>
+                    <p className="today-date">{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
                     <div className="icon">
                         <img src={weatherdataa.icon} alt="weather"></img>
                     </div>
