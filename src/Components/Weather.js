@@ -62,6 +62,8 @@ function Weather() {
                 humidity: data.main.humidity,
                 winspeed: data.wind.speed,
                 temperature: Math.floor(data.main.temp),
+                temp_max: Math.floor(data.main.temp_max),
+                temp_min: Math.floor(data.main.temp_min),
                 location: data.name,
                 icon: icon,
                 description:data.weather[0].description
@@ -69,24 +71,32 @@ function Weather() {
 
             // Extract tomorrow and day after tomorrow (first weather of each day)
             const forecast = [];
-            let currentdate = null;
+            const uniqueDates = new Set();
+            const today = new Date().toLocaleDateString('en-CA');
+            
             for (let item of forecastdata.list) {
-                const date = new Date(item.dt * 1000).toLocaleDateString();
-                if (currentdate !== date && forecast.length < 2) {
-                    currentdate = date;
+                const date = new Date(item.dt * 1000);
+                const dateKey = date.toLocaleDateString('en-CA'); // YYYY-MM-DD format for consistency
+                
+                // Skip today's date and add only first entry of each future date
+                if (dateKey !== today && !uniqueDates.has(dateKey) && forecast.length < 2) {
+                    uniqueDates.add(dateKey);
                     const forecasticon = allicon[item.weather[0].icon] || Clear;
                     forecast.push({
                         temperature: Math.floor(item.main.temp),
+                        temp_max: Math.floor(item.main.temp_max),
+                        temp_min: Math.floor(item.main.temp_min),
                         humidity: item.main.humidity,
                         winspeed: item.wind.speed,
                         icon: forecasticon,
                         description: item.weather[0].description,
-                        date: date
+                        date: dateKey
                     });
                 }
             }
             setforecastdata(forecast);
             setselectedday(0);
+            console.log("Forecast data extracted:", forecast);
         } catch (error) {
             setweatherdata(false);
             console.error("error in fetching weather data");
@@ -114,6 +124,7 @@ function Weather() {
                         <img src={weatherdataa.icon} alt="weather"></img>
                     </div>
                     <p className="temperature">{weatherdataa.temperature}ºC</p>
+                    <p className="temp-range">H: {weatherdataa.temp_max}ºC L: {weatherdataa.temp_min}ºC</p>
                     <p className="Location">{weatherdataa.location}</p>
                     <p className="description">{weatherdataa.description}</p>
                     <div className="weatherdata">
@@ -156,11 +167,13 @@ function Weather() {
 
                     {/* Forecast Panel */}
                     {forecastdata && forecastdata[selectedday] && (
-                        <div className="forecast-panel">
+                        <div className="forecast-panel" key={`forecast-${selectedday}`}>
+                            <p className="forecast-date">{new Date(forecastdata[selectedday].date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
                             <div className="forecast-icon">
-                                <img src={forecastdata[selectedday].icon} alt="forecast weather"></img>
+                                <img key={`icon-${selectedday}-${forecastdata[selectedday].icon}`} src={forecastdata[selectedday].icon} alt="forecast weather"></img>
                             </div>
                             <p className="forecast-temperature">{forecastdata[selectedday].temperature}ºC</p>
+                            <p className="forecast-temp-range">H: {forecastdata[selectedday].temp_max}ºC L: {forecastdata[selectedday].temp_min}ºC</p>
                             <p className="forecast-description">{forecastdata[selectedday].description}</p>
                             <div className="forecast-data">
                                 <div className="forecast-col">
