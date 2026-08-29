@@ -58,45 +58,89 @@ function Weather() {
             console.log(data);
             console.log(forecastdata);
             const icon = allicon[data.weather[0].icon] || Clear;
+            
+            // Extract today and future days with true daily max/min
+            // Forecast API returns 8 data points per day (3-hour chunks)
+            const today = new Date().toLocaleDateString('en-CA');
+            const dayGrouped = {};
+            
+            // Group all forecast entries by date
+            for (let item of forecastdata.list) {
+                const date = new Date(item.dt * 1000);
+                const dateKey = date.toLocaleDateString('en-CA');
+                
+                if (!dayGrouped[dateKey]) {
+                    dayGrouped[dateKey] = [];
+                }
+                dayGrouped[dateKey].push(item);
+            }
+            
+            // Get today's data with true daily max/min from forecast
+            let todayMax = Math.floor(data.main.temp_max);
+            let todayMin = Math.floor(data.main.temp_min);
+            
+            if (dayGrouped[today]) {
+                todayMax = -Infinity;
+                todayMin = Infinity;
+                for (let item of dayGrouped[today]) {
+                    if (item.main.temp_max > todayMax) {
+                        todayMax = item.main.temp_max;
+                    }
+                    if (item.main.temp_min < todayMin) {
+                        todayMin = item.main.temp_min;
+                    }
+                }
+                todayMax = Math.floor(todayMax);
+                todayMin = Math.floor(todayMin);
+            }
+            
             setweatherdata({
                 humidity: data.main.humidity,
                 winspeed: data.wind.speed,
                 temperature: Math.floor(data.main.temp),
-                temp_max: Math.floor(data.main.temp_max),
-                temp_min: Math.floor(data.main.temp_min),
+                temp_max: todayMax,
+                temp_min: todayMin,
                 location: data.name,
                 icon: icon,
                 description:data.weather[0].description
             })
 
-            // Extract tomorrow and day after tomorrow (first weather of each day)
+            // Extract tomorrow and day after tomorrow with true daily max/min
             const forecast = [];
-            const uniqueDates = new Set();
-            const today = new Date().toLocaleDateString('en-CA');
+            const dates = Object.keys(dayGrouped).sort().filter(date => date !== today).slice(0, 2); // Get first 2 future dates
             
-            for (let item of forecastdata.list) {
-                const date = new Date(item.dt * 1000);
-                const dateKey = date.toLocaleDateString('en-CA'); // YYYY-MM-DD format for consistency
+            for (let dateKey of dates) {
+                const dayEntries = dayGrouped[dateKey];
+                const firstEntry = dayEntries[0]; // Use first entry for icon, description, etc
                 
-                // Skip today's date and add only first entry of each future date
-                if (dateKey !== today && !uniqueDates.has(dateKey) && forecast.length < 2) {
-                    uniqueDates.add(dateKey);
-                    const forecasticon = allicon[item.weather[0].icon] || Clear;
-                    forecast.push({
-                        temperature: Math.floor(item.main.temp),
-                        temp_max: Math.floor(item.main.temp_max),
-                        temp_min: Math.floor(item.main.temp_min),
-                        humidity: item.main.humidity,
-                        winspeed: item.wind.speed,
-                        icon: forecasticon,
-                        description: item.weather[0].description,
-                        date: dateKey
-                    });
+                // Calculate true daily max and min by looping through all 8 time slots
+                let dailyMax = -Infinity;
+                let dailyMin = Infinity;
+                
+                for (let item of dayEntries) {
+                    if (item.main.temp_max > dailyMax) {
+                        dailyMax = item.main.temp_max;
+                    }
+                    if (item.main.temp_min < dailyMin) {
+                        dailyMin = item.main.temp_min;
+                    }
                 }
+                
+                const forecasticon = allicon[firstEntry.weather[0].icon] || Clear;
+                forecast.push({
+                    temperature: Math.floor(firstEntry.main.temp),
+                    temp_max: Math.floor(dailyMax),
+                    temp_min: Math.floor(dailyMin),
+                    humidity: firstEntry.main.humidity,
+                    winspeed: firstEntry.wind.speed,
+                    icon: forecasticon,
+                    description: firstEntry.weather[0].description,
+                    date: dateKey
+                });
             }
             setforecastdata(forecast);
             setselectedday(0);
-            console.log("Forecast data extracted:", forecast);
+            console.log("Forecast data extracted with true daily min/max:", forecast);
         } catch (error) {
             setweatherdata(false);
             console.error("error in fetching weather data");
