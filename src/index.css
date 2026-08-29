@@ -118,3 +118,105 @@ h1 {
   width: 26px;
   margin-top: 25px;
 }
+
+/* Forecast Buttons */
+.forecast-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.forecast-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+  background-color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #333;
+
+  @media (max-width: 872px) {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+.forecast-btn:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.forecast-btn.active {
+  background-color: rgba(0, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.4);
+}
+
+/* Forecast Panel */
+.forecast-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.6);
+  width: 90%;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 872px) {
+    width: 95%;
+    padding: 1rem 0.8rem;
+  }
+}
+
+.forecast-icon img {
+  height: 5rem;
+  width: 5rem;
+}
+
+.forecast-temperature {
+  font-size: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+
+.forecast-description {
+  font-size: 0.95rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.8rem;
+  color: #555;
+  text-transform: capitalize;
+}
+
+.forecast-data {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.forecast-col {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: 5px;
+}
+
+.forecast-col img {
+  width: 20px;
+  height: 20px;
+}
+
+.forecast-col p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}

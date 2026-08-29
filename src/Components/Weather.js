@@ -13,6 +13,8 @@ import Thunderstorm from "../Images/thunderstorm.png"
 function Weather() {
     const inputref = useRef();
     const [weatherdataa, setweatherdata] = useState(false);
+    const [forecastdata, setforecastdata] = useState(null);
+    const [selectedday, setselectedday] = useState(0); // 0 = tomorrow, 1 = day after tomorrow
     const allicon = {
         "01d": Clear,
         "01n": Clearnight,
@@ -42,13 +44,19 @@ function Weather() {
         }
         try {
             const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_API_KEY}&units=metric`;
+            const forecasturl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${process.env.REACT_APP_API_KEY}&units=metric`;
             const response = await fetch(url);
+            const forecastres = await fetch(forecasturl);
+            
             const data = await response.json();
+            const forecastdata = await forecastres.json();
+            
             if (!response.ok) {
                 alert(data.message);
                 return;
             }
             console.log(data);
+            console.log(forecastdata);
             const icon = allicon[data.weather[0].icon] || Clear;
             setweatherdata({
                 humidity: data.main.humidity,
@@ -58,6 +66,27 @@ function Weather() {
                 icon: icon,
                 description:data.weather[0].description
             })
+
+            // Extract tomorrow and day after tomorrow (first weather of each day)
+            const forecast = [];
+            let currentdate = null;
+            for (let item of forecastdata.list) {
+                const date = new Date(item.dt * 1000).toLocaleDateString();
+                if (currentdate !== date && forecast.length < 2) {
+                    currentdate = date;
+                    const forecasticon = allicon[item.weather[0].icon] || Clear;
+                    forecast.push({
+                        temperature: Math.floor(item.main.temp),
+                        humidity: item.main.humidity,
+                        winspeed: item.wind.speed,
+                        icon: forecasticon,
+                        description: item.weather[0].description,
+                        date: date
+                    });
+                }
+            }
+            setforecastdata(forecast);
+            setselectedday(0);
         } catch (error) {
             setweatherdata(false);
             console.error("error in fetching weather data");
@@ -103,11 +132,55 @@ function Weather() {
                                 <span>Wind Speed</span>
                             </div>
                         </div>
-                    </div></> : <></>}
+                    </div>
+
+                    {/* Forecast Buttons */}
+                    {forecastdata && forecastdata.length > 0 && (
+                        <div className="forecast-buttons">
+                            <button 
+                                className={`forecast-btn ${selectedday === 0 ? 'active' : ''}`}
+                                onClick={() => setselectedday(0)}
+                            >
+                                Tomorrow
+                            </button>
+                            {forecastdata.length > 1 && (
+                                <button 
+                                    className={`forecast-btn ${selectedday === 1 ? 'active' : ''}`}
+                                    onClick={() => setselectedday(1)}
+                                >
+                                    Day After Tomorrow
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Forecast Panel */}
+                    {forecastdata && forecastdata[selectedday] && (
+                        <div className="forecast-panel">
+                            <div className="forecast-icon">
+                                <img src={forecastdata[selectedday].icon} alt="forecast weather"></img>
+                            </div>
+                            <p className="forecast-temperature">{forecastdata[selectedday].temperature}ºC</p>
+                            <p className="forecast-description">{forecastdata[selectedday].description}</p>
+                            <div className="forecast-data">
+                                <div className="forecast-col">
+                                    <img src={Humidity_icon} alt="humidity"></img>
+                                    <div>
+                                        <p>{forecastdata[selectedday].humidity}%</p>
+                                    </div>
+                                </div>
+                                <div className="forecast-col">
+                                    <img src={Wind} alt="wind"></img>
+                                    <div>
+                                        <p>{forecastdata[selectedday].winspeed} Km/h</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </> : <></>}
             </div>
         
-
-
     );
 }
 
