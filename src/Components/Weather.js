@@ -10,10 +10,13 @@ import Search from "../Images/search.png"
 import Clearnight from "../Images/clearnight.png"
 import Mist from "../Images/Mist.png"
 import Thunderstorm from "../Images/thunderstorm.png"
+import WeatherDetails from "./WeatherDetails";
 function Weather() {
     const inputref = useRef();
     const [weatherdataa, setweatherdata] = useState(false);
     const [forecastdata, setforecastdata] = useState(null);
+    const [rawWeather, setRawWeather] = useState(null);
+    const [showDetails, setShowDetails] = useState(false);
     const [selectedday, setselectedday] = useState(0); // 0 = tomorrow, 1 = day after tomorrow
     const allicon = {
         "01d": Clear,
@@ -104,6 +107,7 @@ function Weather() {
                 icon: icon,
                 description:data.weather[0].description
             })
+            setRawWeather(data);
 
             // Extract tomorrow and day after tomorrow with true daily max/min
             const forecast = [];
@@ -143,12 +147,13 @@ function Weather() {
             console.log("Forecast data extracted with true daily min/max:", forecast);
         } catch (error) {
             setweatherdata(false);
+            setRawWeather(null);
             console.error("error in fetching weather data");
         }
     }
 
     useEffect(() => {
-        search("Bengaluru");
+        search("agartala");
     }, [])
     return (
 
@@ -181,6 +186,10 @@ function Weather() {
                     <p className="temp-range">H: {weatherdataa.temp_max}ºC L: {weatherdataa.temp_min}ºC</p>
                     <p className="Location">{weatherdataa.location}</p>
                     <p className="description">{weatherdataa.description}</p>
+                    <button className="more-btn" onClick={() => setShowDetails(prev => !prev)}>{showDetails ? 'Hide Details' : 'More Details'}</button>
+                    {showDetails && rawWeather && (
+                        <WeatherDetails data={rawWeather} forecast={forecastdata} />
+                    )}
                     <div className="weatherdata">
                         <div className="col">
                             <img src={Humidity_icon} alt="weatherimage"></img>

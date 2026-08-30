@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+/* Styles for WeatherDetails and More button */
+.more-btn {
+  margin: 10px 0;
+  padding: 8px 12px;
+  background: #0366d6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.more-btn:hover { opacity: 0.95; }
+.weather-details {
+  margin-top: 12px;
+  text-align: left;
+  background: #f7f7f7;
+  padding: 12px;
+  border-radius: 8px;
+}
+.weather-details h3 { margin: 0 0 8px 0; }
+.details-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.forecast-details { margin-top: 10px; }
+.forecast-list { display: flex; gap: 8px; overflow: auto; }
+.forecast-item { background: #fff; padding: 8px; border-radius: 6px; min-width: 140px; }
